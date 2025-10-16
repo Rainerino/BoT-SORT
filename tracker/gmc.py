@@ -265,8 +265,11 @@ class GMC:
             return H
 
         # find correspondences
-        matchedKeypoints, status, err = cv2.calcOpticalFlowPyrLK(self.prevFrame, frame, self.prevKeyPoints, None)
-
+        try:
+            matchedKeypoints, status, err = cv2.calcOpticalFlowPyrLK(self.prevFrame, frame, self.prevKeyPoints, None)
+        except Exception as e:
+            print(f"Error in calcOpticalFlowPyrLK: {e}")
+            return H
         # leave good correspondences only
         prevPoints = []
         currPoints = []
