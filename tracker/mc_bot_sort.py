@@ -146,7 +146,9 @@ class STrack(BaseTrack):
         self.tracklet_len += 1
 
         new_tlwh = new_track.tlwh
-
+        print(self.mean)
+        print(self.covariance)
+        print(self.tlwh_to_xywh(new_tlwh))
         self.mean, self.covariance = self.kalman_filter.update(self.mean, self.covariance, self.tlwh_to_xywh(new_tlwh))
 
         if new_track.curr_feat is not None:
