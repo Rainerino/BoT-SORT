@@ -50,7 +50,7 @@ def preprocess(image, input_size):
 
 
 class FastReIDInterface:
-    def __init__(self, config_file, weights_path, device, batch_size=8):
+    def __init__(self, config_file, weights_path, model, device, batch_size=8):
         super(FastReIDInterface, self).__init__()
         if device != 'cpu':
             self.device = 'cuda'
@@ -60,11 +60,10 @@ class FastReIDInterface:
         self.batch_size = batch_size
 
         self.cfg = setup_cfg(config_file, ['MODEL.WEIGHTS', weights_path])
-
-        self.model = build_model(self.cfg)
+        self.model = model
         self.model.eval()
 
-        Checkpointer(self.model).load(weights_path)
+        #Checkpointer(self.model).load(weights_path)
 
         if self.device != 'cpu':
             self.model = self.model.eval().to(device='cuda').half()
@@ -97,13 +96,14 @@ class FastReIDInterface:
             patch = cv2.resize(patch, tuple(self.cfg.INPUT.SIZE_TEST[::-1]), interpolation=cv2.INTER_LINEAR)
             # patch, scale = preprocess(patch, self.cfg.INPUT.SIZE_TEST[::-1])
 
-            # plt.figure()
-            # plt.imshow(patch)
-            # plt.show()
+            #plt.figure()
+            #plt.imshow(patch)
+            #plt.show()
 
             # Make shape with a new batch dimension which is adapted for network input
             patch = torch.as_tensor(patch.astype("float32").transpose(2, 0, 1))
             patch = patch.to(device=self.device).half()
+            patch = patch / 255.0
 
             patches.append(patch)
 
@@ -116,9 +116,8 @@ class FastReIDInterface:
             patches = torch.stack(patches, dim=0)
             batch_patches.append(patches)
 
-        features = np.zeros((0, 2048))
+        features = np.zeros((0, 512))
         # features = np.zeros((0, 768))
-
         for patches in batch_patches:
 
             # Run model
@@ -146,6 +145,5 @@ class FastReIDInterface:
                         plt.show()
 
             features = np.vstack((features, feat))
-
         return features
 
