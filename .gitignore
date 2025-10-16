@@ -8,5 +8,7 @@
 wandb/
 *egg-info*
 fast_reid/datasets/MOT17-ReID
-*/__pycache__
+__pycache__
 *.so
+
+

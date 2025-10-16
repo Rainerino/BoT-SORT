@@ -17,7 +17,7 @@ class STrack(BaseTrack):
     def __init__(self, tlwh, score, cls, feat=None, feat_history=50):
 
         # wait activate
-        self._tlwh = np.asarray(tlwh, dtype=np.float)
+        self._tlwh = np.asarray(tlwh, dtype=np.float64)
         self.kalman_filter = None
         self.mean, self.covariance = None, None
         self.is_activated = False
@@ -146,7 +146,9 @@ class STrack(BaseTrack):
         self.tracklet_len += 1
 
         new_tlwh = new_track.tlwh
-
+        print(self.mean)
+        print(self.covariance)
+        print(self.tlwh_to_xywh(new_tlwh))
         self.mean, self.covariance = self.kalman_filter.update(self.mean, self.covariance, self.tlwh_to_xywh(new_tlwh))
 
         if new_track.curr_feat is not None:

@@ -201,7 +201,8 @@ class STrack(BaseTrack):
 
 class BoTSORT(object):
     def __init__(self, args, frame_rate=30):
-
+        import pdb
+        pdb.set_trace()
         self.tracked_stracks = []  # type: list[STrack]
         self.lost_stracks = []  # type: list[STrack]
         self.removed_stracks = []  # type: list[STrack]
@@ -228,6 +229,8 @@ class BoTSORT(object):
         self.gmc = GMC(method=args.cmc_method, verbose=[args.name, args.ablation])
 
     def update(self, output_results, img):
+        import pdb
+        pdb.set_trace()
         self.frame_id += 1
         activated_starcks = []
         refind_stracks = []
@@ -324,6 +327,8 @@ class BoTSORT(object):
         else:
             dists = ious_dists
 
+        import pdb
+        pdb.set_trace()
         matches, u_track, u_detection = matching.linear_assignment(dists, thresh=self.args.match_thresh)
 
         for itracked, idet in matches:
